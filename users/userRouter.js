@@ -3,8 +3,12 @@ const userDb = require('./userDb');
 
 const router = express.Router();
 
+/**
+ * Endpoint: `/users`
+ * method: POST
+ * status: 400, 200, 500
+ */
 router.post('/', (req, res) => {
-  // do your magic!
   if (!req.body.name) {
     res.status(400).json({ message: "name is required" })
   }
@@ -21,13 +25,20 @@ router.post('/', (req, res) => {
     })
 });
 
+/**
+ *
+ */
 router.post('/:id/posts', (req, res) => {
   // do your magic!
 
 });
 
+/**
+ * Endpoint: `/users`
+ * method: GET
+ * status: 200, 404, 500
+ */
 router.get('/', (req, res) => {
-  // do your magic!
   userDb.get()
     .then(data => {
       if (data) {
@@ -41,8 +52,12 @@ router.get('/', (req, res) => {
     })
 });
 
+/**
+ * Endpoint: `/users/:id`
+ * method: GET
+ * status: 200, 400, 500
+ */
 router.get('/:id', (req, res) => {
-  // do your magic!
   userDb.getById(req.params.id)
     .then(user => {
       if (user) {
@@ -55,6 +70,11 @@ router.get('/:id', (req, res) => {
     })
 });
 
+/**
+ * Endpoint: `/users/:id/posts`
+ * method: GET
+ * status: 200, 400, 500
+ */
 router.get('/:id/posts', (req, res) => {
   // do your magic!
   userDb.getUserPosts(req.params.id)
@@ -71,8 +91,12 @@ router.get('/:id/posts', (req, res) => {
     })
 });
 
+/**
+ * Endpoint: `/users/:id`
+ * method: DELETE
+ * status: 404, 200, 500
+ */
 router.delete('/:id', (req, res) => {
-  // do your magic!
   const id = req.params.id;
   userDb.getById(id)
     .then(data => {
