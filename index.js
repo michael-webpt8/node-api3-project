@@ -1,8 +1,11 @@
 // code away!
 const express = require('express');
+const userRouter = require('./users/userRouter');
 
 const server = express();
 server.use(express.json());
+
+server.use('/users', userRouter);
 
 server.use((req, res) => {
     res.status(404).json({ message: "Route was not Found" })
