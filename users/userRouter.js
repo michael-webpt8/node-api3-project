@@ -134,18 +134,18 @@ router.delete('/:id', (req, res) => {
 
 });
 
-router.put('/:id', validateUser, (req, res) => {
+router.put('/:id', (req, res) => {
   const id = req.params.id;
   userDb.getById(id)
     .then(data => {
       if (!data) {
         return res.status(404).json({ message: "user does not exist" })
       }
-      // if (!req.body.name) {
-      //   res.status(400).json({ message: "name is required" })
-      // }
+      if (!req.body.name) {
+        res.status(400).json({ message: "name is required" })
+      }
       const updateName = {
-        name: req.body.name
+        name: req.user.name
       }
       userDb.update(id, updateName)
         .then(update => {
@@ -156,12 +156,13 @@ router.put('/:id', validateUser, (req, res) => {
           res.status(500).json({ errorMessage: "Did not update" })
         })
     })
-});
+})
 
 //custom middleware
 
 // function validateUserId(req, res, next) {
-//   userDb.getById(req.params.id)
+//   const id = req.params.id;
+//   userDb.getById(id)
 //     .then(user => {
 //       if (user) {
 //         req.user = user;
@@ -178,19 +179,19 @@ router.put('/:id', validateUser, (req, res) => {
 
 // }
 
-function validateUser(req, res, next) {
-  if (!req.body.name) {
-    return res.status(400).json({ message: "missing user data" })
-  }
-  next()
-}
+// function validateUser(req, res, next) {
+//   if (!req.body.name) {
+//     return res.status(400).json({ message: "missing user data" })
+//   }
+//   next()
+// }
 
-function validatePost(req, res, next) {
-  if (!req.body.text) {
-    return res.status(400).json({ message: "missing required text field" })
-  }
-  next()
+// function validatePost(req, res, next) {
+//   if (!req.body.text) {
+//     return res.status(400).json({ message: "missing required text field" })
+//   }
+//   next()
 
-}
+// }
 
 module.exports = router;
