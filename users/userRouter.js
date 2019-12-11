@@ -30,12 +30,27 @@ router.post('/', (req, res) => {
  *
  */
 router.post('/:id/posts', (req, res) => {
-  // if (!req.body.text) {
-  //   res.status(400).json({ message: "Text is required" })
-  // }
-  // const newText = {
-  //   text: req.body.text
-  // }
+  const id = req.params.id;
+  userDb.getById(id)
+    .then(post => {
+      if (!post) {
+        res.status(404).json({ message: "cannot find id" })
+      }
+      if (!req.body.text) {
+        res.status(400).json({ message: "Text is required" })
+      }
+      const newText = {
+        text: req.body.text
+      }
+      postDb.update(id, newText)
+        .then(updatePost => {
+          res.status(200).json(updatePost)
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({ errorMessage: "server error on Post with ID" })
+        })
+    })
 
 });
 
