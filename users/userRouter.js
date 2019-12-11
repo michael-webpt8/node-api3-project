@@ -5,10 +5,25 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   // do your magic!
+  if (!req.body.name) {
+    res.status(400).json({ message: "name is required" })
+  }
+  const newName = {
+    name: req.body.name
+  }
+  userDb.insert(newName)
+    .then(user => {
+      res.status(200).json(user)
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ errorMessage: "post server error" })
+    })
 });
 
 router.post('/:id/posts', (req, res) => {
   // do your magic!
+
 });
 
 router.get('/', (req, res) => {
@@ -42,10 +57,36 @@ router.get('/:id', (req, res) => {
 
 router.get('/:id/posts', (req, res) => {
   // do your magic!
+  userDb.getUserPosts(req.params.id)
+    .then(post => {
+      if (post) {
+        res.status(200).json(post)
+      } else {
+        res.status(400).json({ message: "post ID not found" })
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ errorMessage: "Server error id posts" })
+    })
 });
 
 router.delete('/:id', (req, res) => {
   // do your magic!
+  const id = req.params.id;
+  userDb.getById(id)
+    .then(data => {
+      if (!data) {
+        return res.status(404).json({ message: "user not found" })
+      }
+      userDb.remove(id).then(data => {
+        res.status(200).json({ message: "The name has been removed" })
+      })
+        .catch(err => {
+          res.status(500).json({ errorMessage: "id delete error" })
+        })
+    })
+
 });
 
 router.put('/:id', (req, res) => {
