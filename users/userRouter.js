@@ -1,5 +1,6 @@
 const express = require('express');
 const userDb = require('./userDb');
+const postDb = require('../posts/postDb');
 
 const router = express.Router();
 
@@ -29,7 +30,12 @@ router.post('/', (req, res) => {
  *
  */
 router.post('/:id/posts', (req, res) => {
-  // do your magic!
+  // if (!req.body.text) {
+  //   res.status(400).json({ message: "Text is required" })
+  // }
+  // const newText = {
+  //   text: req.body.text
+  // }
 
 });
 
@@ -114,42 +120,62 @@ router.delete('/:id', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  // do your magic!
+  const id = req.params.id;
+  userDb.getById(id)
+    .then(data => {
+      if (!data) {
+        return res.status(404).json({ message: "user does not exist" })
+      }
+      if (!req.body.name) {
+        res.status(400).json({ message: "name is required" })
+      }
+      const updateName = {
+        name: req.body.name
+      }
+      userDb.update(id, updateName)
+        .then(update => {
+          res.status(200).json(update)
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json({ errorMessage: "Did not update" })
+        })
+    })
 });
 
 //custom middleware
 
-function validateUserId(req, res, next) {
-  userDb.getById(req.params.id)
-    .then(user => {
-      if (user) {
-        req.user = user;
-        next()
-      } else {
-        res.status(400).json({ message: "Invalid user id" })
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ message: "Error getting User" })
-    })
-  next()
+// function validateUserId(req, res, next) {
+//   userDb.getById(req.params.id)
+//     .then(user => {
+//       if (user) {
+//         req.user = user;
+//         next()
+//       } else {
+//         res.status(400).json({ message: "Invalid user id" })
+//       }
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       res.status(500).json({ message: "Error getting User" })
+//     })
+//   next()
 
-}
+// }
 
-function validateUser(req, res, next) {
-  if (!req.body.name) {
-    return res.status(400).json({ message: "missing user data" })
-  }
-  next()
-}
+// function validateUser(req, res, next) {
+//   if (!req.body.name) {
+//     return res.status(400).json({ message: "missing user data" })
+//   }
+//   next()
+// }
 
-function validatePost(req, res, next) {
-  if (!req.body.text) {
-    return res.status(400).json({ message: "missing required text field" })
-  }
-  next()
+// function validatePost(req, res, next) {
+//   if (!req.body.text) {
+//     return res.status(400).json({ message: "missing required text field" })
+//   }
+//   next()
 
-}
+// }
 
 module.exports = router;
