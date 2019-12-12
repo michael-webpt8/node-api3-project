@@ -78,17 +78,8 @@ router.get('/', (req, res) => {
  * method: GET
  * status: 200, 400, 500
  */
-router.get('/:id', (req, res) => {
-  userDb.getById(req.params.id)
-    .then(user => {
-      if (user) {
-        res.status(200).json(user)
-      } else {
-        res.status(400).json({ message: "user ID not found" })
-      }
-    }).catch(err => {
-      res.status(500).json({ message: "server error" })
-    })
+router.get('/:id', validateUserId, (req, res) => {
+  res.status(200).json(req.user);
 });
 
 /**
