@@ -118,12 +118,6 @@ router.get('/:id/posts', (req, res) => {
  * status: 404, 200, 500
  */
 router.delete('/:id', validateUserId, (req, res) => {
-  //const id = req.params.id;
-  // userDb.getById(id)
-  //   .then(data => {
-  //     if (!data) {
-  //       return res.status(404).json({ message: "user not found" })
-  //     }
   userDb.remove(req.user.id).then(data => {
     res.status(200).json({ message: "The name has been removed" })
   })
