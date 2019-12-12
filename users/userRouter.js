@@ -117,22 +117,21 @@ router.get('/:id/posts', (req, res) => {
  * method: DELETE
  * status: 404, 200, 500
  */
-router.delete('/:id', (req, res) => {
-  const id = req.params.id;
-  userDb.getById(id)
-    .then(data => {
-      if (!data) {
-        return res.status(404).json({ message: "user not found" })
-      }
-      userDb.remove(id).then(data => {
-        res.status(200).json({ message: "The name has been removed" })
-      })
-        .catch(err => {
-          res.status(500).json({ errorMessage: "id delete error" })
-        })
+router.delete('/:id', validateUserId, (req, res) => {
+  //const id = req.params.id;
+  // userDb.getById(id)
+  //   .then(data => {
+  //     if (!data) {
+  //       return res.status(404).json({ message: "user not found" })
+  //     }
+  userDb.remove(req.user.id).then(data => {
+    res.status(200).json({ message: "The name has been removed" })
+  })
+    .catch(err => {
+      res.status(500).json({ errorMessage: "id delete error" })
     })
+})
 
-});
 
 router.put('/:id', validateUserId, validateUser, (req, res, next) => {
   const id = req.params.id;
@@ -163,9 +162,8 @@ function validateUserId(req, res, next) {
     .catch(err => {
       console.log(err);
       next(err)
-      // res.status(500).json({ message: "Error getting User" })
     })
-  //next()
+
 
 }
 
